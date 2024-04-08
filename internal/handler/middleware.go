@@ -2,8 +2,8 @@ package handler
 
 import (
 	"avito_test_assingment/internal/handler/response"
+	"avito_test_assingment/types"
 	"github.com/gin-gonic/gin"
-	"log/slog"
 	"net/http"
 	"strings"
 )
@@ -31,7 +31,18 @@ func (h *Handler) userIdentity(c *gin.Context) {
 		response.NewErrorResponse(c, http.StatusUnauthorized, err.Error())
 		return
 	}
-	slog.Info("ROLE:", claims.Role)
 	c.Set("role", claims.Role)
+}
 
+func (h *Handler) administratorVerification(c *gin.Context) {
+	role, exists := c.Get("role")
+	if !exists {
+		response.NewErrorResponse(c, http.StatusUnauthorized, "can't get role")
+		return
+	}
+
+	if role != types.Admin {
+		response.NewErrorResponse(c, http.StatusForbidden, "You are not an admin")
+		return
+	}
 }

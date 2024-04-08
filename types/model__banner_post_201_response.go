@@ -12,7 +12,7 @@ package types
 type BannerPost201Response struct {
 
 	// Идентификатор созданного баннера
-	BannerId int32 `json:"banner_id,omitempty"`
+	BannerId int `json:"banner_id,omitempty"`
 }
 
 // AssertBannerPost201ResponseRequired checks if the required fields are not zero-ed

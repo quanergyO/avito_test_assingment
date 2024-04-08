@@ -13,11 +13,11 @@ type Authorization interface {
 }
 
 type Banner interface {
-	BannerGet(token string, featureId int, tagId int, limit int, offset int) ([]types.BannerGet200ResponseInner, error)
-	BannerIdDelete(id int, token string) error
-	BannerIdPatch(id int, data types.BannerIdPatchRequest, token string) error
-	BannerPost(data types.BannerPostRequest, token string) (int, error)
-	UserBannerGet(tagId int, featureId int, useLastRevision bool, token string) (types.BannerGet200ResponseInner, error)
+	BannerGet(featureId int, tagId int, limit int, offset int) ([]types.BannerGet200ResponseInner, error)
+	BannerIdDelete(id int) error
+	BannerIdPatch(id int, data types.BannerIdPatchRequest) error
+	BannerPost(data types.BannerPostRequest) (int, error)
+	UserBannerGet(tagId int, featureId int, useLastRevision bool) (types.BannerGet200ResponseInner, error)
 }
 
 type Service struct {

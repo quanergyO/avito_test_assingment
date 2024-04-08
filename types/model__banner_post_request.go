@@ -12,10 +12,10 @@ package types
 type BannerPostRequest struct {
 
 	// Идентификаторы тэгов
-	TagIds []int32 `json:"tag_ids,omitempty"`
+	TagIds []int `json:"tag_ids,omitempty"`
 
 	// Идентификатор фичи
-	FeatureId int32 `json:"feature_id,omitempty"`
+	FeatureId int `json:"feature_id,omitempty"`
 
 	// Содержимое баннера
 	Content map[string]interface{} `json:"content,omitempty"`

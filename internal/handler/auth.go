@@ -4,7 +4,6 @@ import (
 	"avito_test_assingment/internal/handler/response"
 	"avito_test_assingment/types"
 	"github.com/gin-gonic/gin"
-	"log/slog"
 	"net/http"
 )
 
@@ -35,7 +34,6 @@ func (h *Handler) signIn(c *gin.Context) {
 	}
 
 	user, err := h.service.CheckAuthData(input.Username, input.Password)
-	slog.Info("UserRole for signIn: ", user.Role)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusUnauthorized, err.Error())
 		return

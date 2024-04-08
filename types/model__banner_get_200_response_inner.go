@@ -15,11 +15,11 @@ import (
 
 type BannerGet200ResponseInner struct {
 	// Идентификатор баннера
-	BannerId int32 `json:"banner_id,omitempty"`
+	BannerId int `json:"banner_id,omitempty"`
 	// Идентификаторы тэгов
-	TagIds []int32 `json:"tag_ids,omitempty"`
+	TagIds []int `json:"tag_ids,omitempty"`
 	// Идентификатор фичи
-	FeatureId int32 `json:"feature_id,omitempty"`
+	FeatureId int `json:"feature_id,omitempty"`
 	// Содержимое баннера
 	Content map[string]interface{} `json:"content,omitempty"`
 	// Флаг активности баннера

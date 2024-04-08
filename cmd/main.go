@@ -1,10 +1,11 @@
 package main
 
 import (
-	"avito_test_assingment/pkg/handler"
-	"avito_test_assingment/pkg/repository"
-	"avito_test_assingment/pkg/repository/postgres"
-	"avito_test_assingment/pkg/service"
+	"avito_test_assingment/internal/cache"
+	"avito_test_assingment/internal/handler"
+	"avito_test_assingment/internal/repository"
+	"avito_test_assingment/internal/repository/postgres"
+	"avito_test_assingment/internal/service"
 	"avito_test_assingment/server"
 	"context"
 	"github.com/joho/godotenv"
@@ -36,15 +37,29 @@ func main() {
 		SSLMode:  viper.GetString("db.sslmode"),
 		Password: os.Getenv("DB_PASSWORD"),
 	})
-
 	if err != nil {
 		slog.Error("Error: failed to init db connection ", err)
 		os.Exit(1)
 	}
 
+	redisDB, err := cache.NewRedis(cache.Config{
+		Host: viper.GetString("redis.host"),
+		Port: viper.GetString("redis.port"),
+		DB:   viper.GetInt("redis.DB"),
+	})
+	if err != nil {
+		slog.Error("Error: failed to init redis connection ", err)
+		os.Exit(1)
+	}
+
+	if err != nil {
+		slog.Info("Error: failed to init redis connection ", err)
+		os.Exit(1)
+	}
+
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
-	handlers := handler.NewHandler(services)
+	handlers := handler.NewHandler(services, redisDB)
 
 	serv := new(server.Server)
 	go func() {

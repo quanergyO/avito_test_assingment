@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"avito_test_assingment/internal/cache"
 	"avito_test_assingment/internal/service"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -9,10 +10,15 @@ import (
 
 type Handler struct {
 	service *service.Service
+	cache   cache.Cache
 }
 
-func NewHandler(service *service.Service) *Handler {
-	return &Handler{service: service}
+func NewHandler(service *service.Service, cache cache.Cache) *Handler {
+
+	return &Handler{
+		service: service,
+		cache:   cache,
+	}
 }
 
 func (h *Handler) InitRoutes() *gin.Engine {
@@ -28,7 +34,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	api := router.Group("/api/v1", h.userIdentity)
 	{
-		banner := api.Group("/banner")
+		banner := api.Group("/banner", h.administratorVerification)
 		{
 			banner.GET("/", h.BannerGet)
 			banner.DELETE("/:id", h.BannerIdDelete)
@@ -36,7 +42,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			banner.POST("/", h.BannerPost)
 
 		}
-		router.GET("/user_banner", h.UserBannerGet)
+		api.GET("/user_banner", h.UserBannerGet)
 	}
 
 	return router

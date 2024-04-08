@@ -7,15 +7,22 @@ import (
 )
 
 func (h *Handler) BannerGet(c *gin.Context) {
-
+	c.JSON(http.StatusNotImplemented, map[string]interface{}{
+		"status": "Not implemented",
+	})
 }
 
 func (h *Handler) BannerIdDelete(c *gin.Context) {
+	c.JSON(http.StatusNotImplemented, map[string]interface{}{
+		"status": "Not implemented",
+	})
 
 }
 
 func (h *Handler) BannerIdPatch(c *gin.Context) {
-
+	c.JSON(http.StatusNotImplemented, map[string]interface{}{
+		"status": "Not implemented",
+	})
 }
 
 func (h *Handler) BannerPost(c *gin.Context) {
@@ -31,5 +38,7 @@ func (h *Handler) BannerPost(c *gin.Context) {
 }
 
 func (h *Handler) UserBannerGet(c *gin.Context) {
-
+	c.JSON(http.StatusNotImplemented, map[string]interface{}{
+		"status": "Not implemented",
+	})
 }
