@@ -1,7 +1,7 @@
 package service
 
 import (
-	"avito_test_assingment/pkg/repository"
+	"avito_test_assingment/internal/repository"
 	"avito_test_assingment/types"
 	"crypto/sha1"
 	"errors"

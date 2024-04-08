@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"avito_test_assingment/pkg/handler/response"
+	"avito_test_assingment/internal/handler/response"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

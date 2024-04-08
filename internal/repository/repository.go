@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"avito_test_assingment/pkg/repository/postgres"
+	"avito_test_assingment/internal/repository/postgres"
 	"avito_test_assingment/types"
 	"github.com/jmoiron/sqlx"
 )
