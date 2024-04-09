@@ -10,18 +10,10 @@
 package types
 
 type BannerPostRequest struct {
-
-	// Идентификаторы тэгов
-	TagIds []int `json:"tag_ids,omitempty"`
-
-	// Идентификатор фичи
-	FeatureId int `json:"feature_id,omitempty"`
-
-	// Содержимое баннера
-	Content map[string]interface{} `json:"content,omitempty"`
-
-	// Флаг активности баннера
-	IsActive bool `json:"is_active,omitempty"`
+	TagIds    []int                  `json:"tag_ids,omitempty"`
+	FeatureId int                    `json:"feature_id,omitempty"`
+	Content   map[string]interface{} `json:"content,omitempty"`
+	IsActive  bool                   `json:"is_active,omitempty"`
 }
 
 // AssertBannerPostRequestRequired checks if the required fields are not zero-ed

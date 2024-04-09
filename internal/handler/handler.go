@@ -13,11 +13,10 @@ type Handler struct {
 	cache   cache.Cache
 }
 
-func NewHandler(service *service.Service, cache cache.Cache) *Handler {
+func NewHandler(service *service.Service) *Handler {
 
 	return &Handler{
 		service: service,
-		cache:   cache,
 	}
 }
 

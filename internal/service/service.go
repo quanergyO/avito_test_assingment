@@ -1,6 +1,7 @@
 package service
 
 import (
+	"avito_test_assingment/internal/cache"
 	"avito_test_assingment/internal/repository"
 	"avito_test_assingment/types"
 )
@@ -13,11 +14,11 @@ type Authorization interface {
 }
 
 type Banner interface {
-	BannerGet(featureId int, tagId int, limit int, offset int) ([]types.BannerGet200ResponseInner, error)
+	BannerGet(featureId int, tagId []int, limit int, offset int) ([]types.BannerGet200ResponseInner, error)
 	BannerIdDelete(id int) error
 	BannerIdPatch(id int, data types.BannerIdPatchRequest) error
 	BannerPost(data types.BannerPostRequest) (int, error)
-	UserBannerGet(tagId int, featureId int, useLastRevision bool) (types.BannerGet200ResponseInner, error)
+	UserBannerGet(tagId []int, featureId int, useLastRevision bool) (types.BannerGet200ResponseInner, error)
 }
 
 type Service struct {
@@ -25,9 +26,9 @@ type Service struct {
 	Banner
 }
 
-func NewService(repos *repository.Repository) *Service {
+func NewService(repos *repository.Repository, cacheInstance cache.Cache) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos),
-		Banner:        NewBannerService(repos),
+		Banner:        NewBannerService(repos, cacheInstance),
 	}
 }

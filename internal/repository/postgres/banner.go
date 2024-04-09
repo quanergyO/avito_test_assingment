@@ -20,7 +20,7 @@ func NewBanner(db *sqlx.DB) *Banner {
 	}
 }
 
-func (r *Banner) BannerGet(featureId int, tagId int, limit int, offset int) ([]types.BannerGet200ResponseInner, error) {
+func (r *Banner) BannerGet(featureId int, tagsId []int, limit int, offset int) ([]types.BannerGet200ResponseInner, error) {
 	return nil, fmt.Errorf("not implemented")
 }
 
@@ -50,6 +50,47 @@ func (r *Banner) BannerPost(data types.BannerPostRequest) (int, error) {
 	return bannerId, nil
 }
 
-func (r *Banner) UserBannerGet(tagId int, featureId int, useLastRevision bool) (types.BannerGet200ResponseInner, error) {
-	return types.BannerGet200ResponseInner{}, fmt.Errorf("not implemented")
+func (r *Banner) UserBannerGet(tagsId []int, featureId int) (types.BannerGet200ResponseInner, error) {
+	slog.Info("Repository: UserBannerGet start")
+	defer slog.Info("Repository: UserBannerGet end")
+
+	var banner types.BannerDTO
+	rows := "tag_ids, feature_id, content, is_active, created_at, updated_at"
+	array := "{"
+	for _, tag := range tagsId {
+		array += fmt.Sprintf("%d,", tag)
+	}
+	array = array[:len(array)-1]
+	array += "}"
+
+	query := fmt.Sprintf("SELECT %s FROM %s WHERE feature_id = $1 AND tag_ids @> $2", rows, bannerTable)
+	slog.Info(query)
+	err := r.db.Get(&banner, query, featureId, array)
+	if err != nil {
+		return types.BannerGet200ResponseInner{}, err
+	}
+
+	var contentMap map[string]interface{}
+	err = json.Unmarshal(banner.Content, &contentMap)
+	if err != nil {
+		return types.BannerGet200ResponseInner{}, err
+	}
+
+	return types.BannerGet200ResponseInner{
+		BannerId:  banner.BannerId,
+		TagIds:    pqInt64ArrayToIntSlice(banner.TagIds),
+		FeatureId: banner.FeatureId,
+		Content:   contentMap,
+		IsActive:  banner.IsActive,
+		CreatedAt: banner.CreatedAt,
+		UpdatedAt: banner.UpdatedAt,
+	}, nil
+}
+
+func pqInt64ArrayToIntSlice(arr pq.Int64Array) []int {
+	result := make([]int, len(arr))
+	for i, v := range arr {
+		result[i] = int(v)
+	}
+	return result
 }

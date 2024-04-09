@@ -31,28 +31,30 @@ func NewRedis(cfg Config) (*RedisCache, error) {
 	return &RedisCache{cli: rdb}, err
 }
 
-func (r *RedisCache) WriteBanner(ctx context.Context, data types.BannerPostRequest) error {
+func (r *RedisCache) WriteBanner(data types.BannerGet200ResponseInner) error {
 	bannerKey := r.configureRedisKey(data.FeatureId, data.TagIds)
-	jsonString, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-	err = r.cli.Set(context.Background(), bannerKey, jsonString, 0).Err()
+	err := r.cli.Set(context.Background(), bannerKey, data, 0).Err()
+	slog.Info("REDIS: Save banner in cache: ", data)
+
 	return err
 }
 
-func (r *RedisCache) ReadBanner(ctx context.Context, input types.GetModelBannerInput) (types.BannerGet200ResponseInner, error) {
+func (r *RedisCache) ReadBanner(input types.GetModelBannerInput) (types.BannerGet200ResponseInner, error) {
 	var banner types.BannerGet200ResponseInner
 	bannerKey := r.configureRedisKey(input.FeatureId, input.TagIds)
-	val, err := r.cli.Get(context.Background(), bannerKey).Result()
+	res, err := r.cli.Get(context.Background(), bannerKey).Result()
 	if err != nil {
-		return banner, err
-	}
-	if err = json.Unmarshal([]byte(val), &banner); err != nil {
-		return banner, err
+		return types.BannerGet200ResponseInner{}, err
 	}
 
-	return banner, nil
+	err = json.Unmarshal([]byte(res), &banner)
+	if err != nil {
+		return types.BannerGet200ResponseInner{}, err
+	}
+
+	slog.Info("REDIS: read banner from cache: ", banner)
+
+	return banner, err
 }
 
 func (r *RedisCache) configureRedisKey(featureId int, tagIds []int) string {
@@ -62,4 +64,30 @@ func (r *RedisCache) configureRedisKey(featureId int, tagIds []int) string {
 	}
 	slog.Info(bannerKey)
 	return bannerKey
+}
+
+func (r *RedisCache) getAllDataFromCache() ([]types.BannerGet200ResponseInner, error) {
+	keys, err := r.cli.Keys(context.Background(), "*").Result()
+	if err != nil {
+		return nil, err
+	}
+	dataToWrite := make([]types.BannerGet200ResponseInner, 0)
+	for _, key := range keys {
+		var tmp types.BannerGet200ResponseInner
+		err := r.cli.Get(context.Background(), key).Scan(&tmp)
+		if err != nil {
+			continue // TODO think
+		}
+		dataToWrite = append(dataToWrite, tmp)
+	}
+
+	return dataToWrite, nil
+}
+
+func (r *RedisCache) IsBannerExists(key string) (bool, error) {
+	notExists, err := r.cli.Exists(context.Background(), key).Result()
+	if err != nil {
+		return false, err
+	}
+	return notExists == 1, nil
 }

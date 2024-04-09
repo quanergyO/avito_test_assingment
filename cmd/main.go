@@ -58,8 +58,8 @@ func main() {
 	}
 
 	repos := repository.NewRepository(db)
-	services := service.NewService(repos)
-	handlers := handler.NewHandler(services, redisDB)
+	services := service.NewService(repos, redisDB)
+	handlers := handler.NewHandler(services)
 
 	serv := new(server.Server)
 	go func() {

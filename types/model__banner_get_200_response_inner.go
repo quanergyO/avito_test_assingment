@@ -10,24 +10,37 @@
 package types
 
 import (
+	"encoding/json"
+	"github.com/lib/pq"
 	"time"
 )
 
 type BannerGet200ResponseInner struct {
-	// Идентификатор баннера
-	BannerId int `json:"banner_id,omitempty"`
-	// Идентификаторы тэгов
-	TagIds []int `json:"tag_ids,omitempty"`
-	// Идентификатор фичи
-	FeatureId int `json:"feature_id,omitempty"`
-	// Содержимое баннера
-	Content map[string]interface{} `json:"content,omitempty"`
-	// Флаг активности баннера
-	IsActive bool `json:"is_active,omitempty"`
-	// Дата создания баннера
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	// Дата обновления баннера
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	BannerId  int                    `json:"banner_id,omitempty" db:"id"`
+	TagIds    []int                  `json:"tag_ids,omitempty" db:"tag_ids"`
+	FeatureId int                    `json:"feature_id,omitempty" db:"feature_id"`
+	Content   map[string]interface{} `json:"content,omitempty" db:"content"`
+	IsActive  bool                   `json:"is_active,omitempty" db:"is_active"`
+	CreatedAt time.Time              `json:"created_at,omitempty" db:"created_at"`
+	UpdatedAt time.Time              `json:"updated_at,omitempty" db:"updated_at"`
+}
+
+type BannerDTO struct {
+	BannerId  int             `json:"banner_id,omitempty" db:"id"`
+	TagIds    pq.Int64Array   `json:"tag_ids,omitempty" db:"tag_ids"`
+	FeatureId int             `json:"feature_id,omitempty" db:"feature_id"`
+	Content   json.RawMessage `json:"content,omitempty" db:"content"`
+	IsActive  bool            `json:"is_active,omitempty" db:"is_active"`
+	CreatedAt time.Time       `json:"created_at,omitempty" db:"created_at"`
+	UpdatedAt time.Time       `json:"updated_at,omitempty" db:"updated_at"`
+}
+
+func (b BannerGet200ResponseInner) MarshalBinary() ([]byte, error) {
+	return json.Marshal(b)
+}
+
+func (b BannerGet200ResponseInner) UnmarshalBinary(data []byte) error {
+	return json.Unmarshal(data, &b)
 }
 
 // AssertBannerGet200ResponseInnerRequired checks if the required fields are not zero-ed

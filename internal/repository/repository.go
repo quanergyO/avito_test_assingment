@@ -7,11 +7,11 @@ import (
 )
 
 type Banner interface {
-	BannerGet(featureId int, tagId int, limit int, offset int) ([]types.BannerGet200ResponseInner, error)
+	BannerGet(featureId int, tagId []int, limit int, offset int) ([]types.BannerGet200ResponseInner, error)
 	BannerIdDelete(id int) error
 	BannerIdPatch(id int, data types.BannerIdPatchRequest) error
 	BannerPost(data types.BannerPostRequest) (int, error)
-	UserBannerGet(tagId int, featureId int, useLastRevision bool) (types.BannerGet200ResponseInner, error)
+	UserBannerGet(tagId []int, featureId int) (types.BannerGet200ResponseInner, error)
 }
 
 type Authorization interface {
