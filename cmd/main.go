@@ -18,6 +18,15 @@ import (
 	"syscall"
 )
 
+// @title Avito Test Assignment Banner Service
+// @version 1.0
+// @description This is a sample server for Banner Service API.
+// @host localhost:8080
+// @BasePath /api/v1
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+
 func main() {
 	if err := initConfig(); err != nil {
 		slog.Error("Error: init configs", err)

@@ -7,11 +7,16 @@ import (
 	"fmt"
 	"github.com/redis/go-redis/v9"
 	"log/slog"
+	"time"
 )
 
 type RedisCache struct {
 	cli *redis.Client
 }
+
+const (
+	TTLCache = 15 * time.Minute
+)
 
 type Config struct {
 	Host     string
@@ -33,7 +38,7 @@ func NewRedis(cfg Config) (*RedisCache, error) {
 
 func (r *RedisCache) WriteBanner(data types.BannerGet200ResponseInner) error {
 	bannerKey := r.configureRedisKey(data.FeatureId, data.TagIds)
-	err := r.cli.Set(context.Background(), bannerKey, data, 0).Err()
+	err := r.cli.Set(context.Background(), bannerKey, data, TTLCache).Err()
 	slog.Info("REDIS: Save banner in cache: ", data)
 
 	return err

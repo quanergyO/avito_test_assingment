@@ -1,6 +1,7 @@
 package handler
 
 import (
+	_ "avito_test_assingment/docs"
 	"avito_test_assingment/internal/cache"
 	"avito_test_assingment/internal/service"
 	"github.com/gin-gonic/gin"

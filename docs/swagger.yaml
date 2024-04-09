@@ -1,0 +1,312 @@
+basePath: /api/v1
+definitions:
+  response.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  types.BannerGet200ResponseInner:
+    properties:
+      banner_id:
+        type: integer
+      content:
+        additionalProperties: true
+        type: object
+      created_at:
+        type: string
+      feature_id:
+        type: integer
+      is_active:
+        type: boolean
+      tag_ids:
+        items:
+          type: integer
+        type: array
+      updated_at:
+        type: string
+    type: object
+  types.BannerIdPatchRequest:
+    properties:
+      content:
+        additionalProperties: true
+        type: object
+      feature_id:
+        type: integer
+      is_active:
+        type: boolean
+      tag_ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  types.BannerPostRequest:
+    properties:
+      content:
+        additionalProperties: true
+        type: object
+      feature_id:
+        type: integer
+      is_active:
+        type: boolean
+      tag_ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  types.Role:
+    enum:
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - User
+    - Admin
+  types.SignInInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  types.UserType:
+    properties:
+      password:
+        type: string
+      role:
+        $ref: '#/definitions/types.Role'
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample server for Banner Service API.
+  title: Avito Test Assignment Banner Service
+  version: "1.0"
+paths:
+  /api/v1/banners:
+    get:
+      consumes:
+      - application/json
+      description: Get user-specific banner by tag IDs, feature ID, and revision
+      parameters:
+      - collectionFormat: csv
+        description: Tag IDs
+        in: query
+        items:
+          type: integer
+        name: tag_ids
+        required: true
+        type: array
+      - description: Feature ID
+        in: query
+        name: feature_id
+        required: true
+        type: integer
+      - description: Use last revision
+        in: query
+        name: use_last_revision
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response with banner
+          schema:
+            $ref: '#/definitions/types.BannerGet200ResponseInner'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get user-specific banner
+      tags:
+      - banners
+    post:
+      consumes:
+      - application/json
+      description: Create a new banner with the provided information
+      parameters:
+      - description: Banner information
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/types.BannerPostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'id": int "Successful response with banner ID'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new banner
+      tags:
+      - banners
+  /api/v1/banners/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a banner by its ID
+      parameters:
+      - description: Banner ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "501":
+          description: 'status": "ok" "Successful response'
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete a banner by ID
+      tags:
+      - banners
+    patch:
+      consumes:
+      - application/json
+      description: Update a banner by its ID with the provided information
+      parameters:
+      - description: Banner ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Banner information
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/types.BannerIdPatchRequest'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "501":
+          description: 'status": "ok" "Successful response'
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update a banner by ID
+      tags:
+      - banners
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user with provided credentials
+      parameters:
+      - description: Sign-in information
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/types.SignInInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'token": "Successful response with access token'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      summary: Authenticate user
+      tags:
+      - auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with the provided information
+      parameters:
+      - description: User information
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/types.UserType'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'id": int'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid input body
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.errorResponse'
+      summary: Create a new user
+      tags:
+      - users
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
