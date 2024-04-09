@@ -7,6 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 	"log/slog"
+	"strings"
 )
 
 type Banner struct {
@@ -77,7 +78,48 @@ func (r *Banner) BannerIdDelete(id int) error {
 }
 
 func (r *Banner) BannerIdPatch(id int, data types.BannerIdPatchRequest) error {
-	return fmt.Errorf("not implemented")
+	slog.Info("Repository: BannerIdPatch start")
+	defer slog.Info("Repository: BannerIdPatch end")
+	setValue := make([]string, 0)
+	args := make([]interface{}, 0)
+	argId := 1
+
+	if data.FeatureId != nil {
+		setValue = append(setValue, fmt.Sprintf("feature_id=$%d", argId))
+		args = append(args, *data.FeatureId)
+		argId++
+	}
+
+	if data.TagIds != nil {
+		setValue = append(setValue, fmt.Sprintf("tag_ids=$%d", argId))
+		args = append(args, pq.Array(*data.TagIds))
+		argId++
+	}
+
+	if data.Content != nil {
+		content, err := json.Marshal(*data.Content)
+
+		if err != nil {
+			slog.Info(string(content))
+			return err
+		}
+		setValue = append(setValue, fmt.Sprintf("content=$%d::jsonb", argId))
+		args = append(args, content)
+		argId++
+	}
+
+	if data.IsActive != nil {
+		setValue = append(setValue, fmt.Sprintf("is_active=$%d", argId))
+		args = append(args, *data.IsActive)
+		argId++
+	}
+	args = append(args, id)
+	setQuery := strings.Join(setValue, ", ")
+	query := fmt.Sprintf("UPDATE %s SET %s WHERE id=$%d", bannerTable, setQuery, argId)
+	slog.Info(query)
+	_, err := r.db.Exec(query, args...)
+
+	return err
 }
 
 func (r *Banner) BannerPost(data types.BannerPostRequest) (int, error) {

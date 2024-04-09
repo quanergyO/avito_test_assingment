@@ -73,8 +73,28 @@ func (h *Handler) BannerIdDelete(c *gin.Context) {
 }
 
 func (h *Handler) BannerIdPatch(c *gin.Context) {
+	slog.Info("handler: BannerIdPatch start")
+	defer slog.Info("handler: BannerIdPatch end")
+
+	var banner types.BannerIdPatchRequest
+	if err := c.BindJSON(&banner); err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "invalid id param")
+		return
+	}
+
+	if err = h.service.BannerIdPatch(id, banner); err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	c.JSON(http.StatusNotImplemented, map[string]interface{}{
-		"status": "Not implemented",
+		"status": "ok",
 	})
 }
 

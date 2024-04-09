@@ -32,10 +32,14 @@ func (s *BannerService) BannerIdDelete(id int) error {
 }
 
 func (s *BannerService) BannerIdPatch(id int, data types.BannerIdPatchRequest) error {
+	slog.Info("Service: BannerIdPatch start")
+	defer slog.Info("Service: BannerIdPatch end")
 	return s.repo.BannerIdPatch(id, data)
 }
 
 func (s *BannerService) BannerPost(data types.BannerPostRequest) (int, error) {
+	slog.Info("Service: BannerPost start")
+	defer slog.Info("Service: BannerPost end")
 	return s.repo.BannerPost(data)
 }
 
