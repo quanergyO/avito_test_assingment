@@ -6,6 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"log/slog"
 	"net/http"
+	"strconv"
+)
+
+const (
+	bannerCtx = "id"
 )
 
 func (h *Handler) BannerGet(c *gin.Context) {
@@ -48,8 +53,21 @@ func (h *Handler) BannerGet(c *gin.Context) {
 }
 
 func (h *Handler) BannerIdDelete(c *gin.Context) {
+	slog.Info("handler: BannerIdDelete start")
+	defer slog.Info("handler: BannerIdDelete end")
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "invalid id param")
+		return
+	}
+
+	if err = h.service.BannerIdDelete(id); err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	c.JSON(http.StatusNotImplemented, map[string]interface{}{
-		"status": "Not implemented",
+		"status": "ok",
 	})
 
 }

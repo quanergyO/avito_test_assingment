@@ -67,7 +67,13 @@ func (r *Banner) BannerGet(featureId int, tagsId []int, limit int, offset int) (
 }
 
 func (r *Banner) BannerIdDelete(id int) error {
-	return fmt.Errorf("not implemented")
+	slog.Info("Repository: UserBannerGet start")
+	defer slog.Info("Repository: UserBannerGet end")
+	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", bannerTable)
+	slog.Info(query)
+	_, err := r.db.Exec(query, id)
+
+	return err
 }
 
 func (r *Banner) BannerIdPatch(id int, data types.BannerIdPatchRequest) error {

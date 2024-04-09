@@ -26,6 +26,8 @@ func (s *BannerService) BannerGet(featureId int, tagId []int, limit int, offset 
 }
 
 func (s *BannerService) BannerIdDelete(id int) error {
+	slog.Info("Service: BannerIdDelete start")
+	defer slog.Info("Service: BannerIdDelete end")
 	return s.repo.BannerIdDelete(id)
 }
 
