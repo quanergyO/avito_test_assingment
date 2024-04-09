@@ -4,7 +4,6 @@ import (
 	"avito_test_assingment/internal/handler/response"
 	"avito_test_assingment/types"
 	"github.com/gin-gonic/gin"
-	"log/slog"
 	"net/http"
 	"strconv"
 	"strings"
@@ -66,7 +65,6 @@ func getIntParam(c *gin.Context, paramString string) (int, error) {
 	}
 	paramInt, err := strconv.Atoi(param)
 	if err != nil {
-		slog.Error("WTF")
 		return 0, err
 	}
 

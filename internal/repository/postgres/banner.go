@@ -8,6 +8,7 @@ import (
 	"github.com/lib/pq"
 	"log/slog"
 	"strings"
+	"time"
 )
 
 type Banner struct {
@@ -107,6 +108,12 @@ func (r *Banner) BannerIdPatch(id int, data types.BannerIdPatchRequest) error {
 		args = append(args, *data.IsActive)
 		argId++
 	}
+
+	now := time.Now()
+	setValue = append(setValue, fmt.Sprintf("updated_at=$%d", argId))
+	args = append(args, now)
+	argId++
+
 	args = append(args, id)
 	setQuery := strings.Join(setValue, ", ")
 	query := fmt.Sprintf("UPDATE %s SET %s WHERE id=$%d", bannerTable, setQuery, argId)
