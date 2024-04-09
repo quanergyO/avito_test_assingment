@@ -20,7 +20,8 @@ func NewBannerService(repo repository.Banner, cacheInstance cache.Cache) *Banner
 }
 
 func (s *BannerService) BannerGet(featureId int, tagId []int, limit int, offset int) ([]types.BannerGet200ResponseInner, error) {
-
+	slog.Info("Service: BannerGet start")
+	defer slog.Info("Service: BannerGet end")
 	return s.repo.BannerGet(featureId, tagId, limit, offset)
 }
 

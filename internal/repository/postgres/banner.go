@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
-
 	"log/slog"
 )
 
@@ -21,7 +20,50 @@ func NewBanner(db *sqlx.DB) *Banner {
 }
 
 func (r *Banner) BannerGet(featureId int, tagsId []int, limit int, offset int) ([]types.BannerGet200ResponseInner, error) {
-	return nil, fmt.Errorf("not implemented")
+	slog.Info("Repository: UserBannerGet start")
+	defer slog.Info("Repository: UserBannerGet end")
+	rows := "tag_ids, feature_id, content, is_active, created_at, updated_at"
+	query := fmt.Sprintf("SELECT %s FROM banners WHERE 1=1", rows)
+	if featureId != 0 {
+		query += fmt.Sprintf(" AND feature_id = %d", featureId)
+	}
+	if len(tagsId) > 0 {
+		query += fmt.Sprintf(" AND tag_ids @> ARRAY[%d", tagsId[0])
+		for _, tagID := range tagsId[1:] {
+			query += fmt.Sprintf(", %d", tagID)
+		}
+		query += "]"
+	}
+	if limit > 0 {
+		query += fmt.Sprintf(" LIMIT %d", limit)
+	}
+	if offset > 0 {
+		query += fmt.Sprintf(" offset %d", offset)
+	}
+
+	slog.Info(query)
+	bannersDTO := make([]types.BannerDTO, 0)
+	if err := r.db.Select(&bannersDTO, query); err != nil {
+		return nil, err
+	}
+
+	banners := make([]types.BannerGet200ResponseInner, len(bannersDTO))
+	for i, banner := range bannersDTO {
+		var contentMap map[string]interface{}
+		err := json.Unmarshal(banner.Content, &contentMap)
+		if err != nil {
+			continue
+		}
+		banners[i].BannerId = banner.BannerId
+		banners[i].TagIds = pqInt64ArrayToIntSlice(banner.TagIds)
+		banners[i].FeatureId = banner.FeatureId
+		banners[i].Content = contentMap
+		banners[i].IsActive = banner.IsActive
+		banners[i].CreatedAt = banner.CreatedAt
+		banners[i].UpdatedAt = banner.UpdatedAt
+	}
+
+	return banners, nil
 }
 
 func (r *Banner) BannerIdDelete(id int) error {

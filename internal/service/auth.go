@@ -35,7 +35,7 @@ func (s *AuthService) CreateUser(user types.UserType) (int, error) {
 }
 
 func (s *AuthService) GenerateToken(user types.UserType) (string, error) {
-	slog.Info("GenerateTOken Role: ", user.Role)
+	slog.Info("GenerateToken Role: ", user.Role)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &types.TokenClaims{
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(tokenTTL).Unix(),

@@ -9,8 +9,41 @@ import (
 )
 
 func (h *Handler) BannerGet(c *gin.Context) {
-	c.JSON(http.StatusNotImplemented, map[string]interface{}{
-		"status": "Not implemented",
+	slog.Info("handler: UserBannerGet start")
+	defer slog.Info("handler: UserBannerGet end")
+
+	tagIDs, err := getIntArrayParam(c, "tags_id")
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "invalid tag_ids param")
+		return
+	}
+
+	featureId, err := getIntParam(c, "feature_id")
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "invalid feature_id param")
+		return
+	}
+
+	limit, err := getDefaultIntParam(c, "limit")
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "invalid limit param")
+		return
+	}
+
+	offset, err := getDefaultIntParam(c, "offset")
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "invalid offset param")
+		return
+	}
+
+	banners, err := h.service.BannerGet(featureId, tagIDs, limit, offset)
+	if err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"Data": banners,
 	})
 }
 

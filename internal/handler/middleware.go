@@ -4,7 +4,9 @@ import (
 	"avito_test_assingment/internal/handler/response"
 	"avito_test_assingment/types"
 	"github.com/gin-gonic/gin"
+	"log/slog"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -45,4 +47,42 @@ func (h *Handler) administratorVerification(c *gin.Context) {
 		response.NewErrorResponse(c, http.StatusForbidden, "You are not an admin")
 		return
 	}
+}
+
+func getDefaultIntParam(c *gin.Context, paramString string) (int, error) {
+	param := c.DefaultQuery(paramString, "0")
+	paramInt, err := strconv.Atoi(param)
+	if err != nil {
+		return 0, err
+	}
+
+	return paramInt, nil
+}
+
+func getIntParam(c *gin.Context, paramString string) (int, error) {
+	param := c.Query(paramString)
+	if param == "" {
+		return 0, nil
+	}
+	paramInt, err := strconv.Atoi(param)
+	if err != nil {
+		slog.Error("WTF")
+		return 0, err
+	}
+
+	return paramInt, nil
+}
+
+func getIntArrayParam(c *gin.Context, paramString string) ([]int, error) {
+	items := c.QueryArray(paramString)
+	itemsInt := make([]int, 0, len(items))
+	for _, item := range items {
+		tagID, err := strconv.Atoi(item)
+		if err != nil {
+			return nil, err
+		}
+		itemsInt = append(itemsInt, tagID)
+	}
+
+	return itemsInt, nil
 }
