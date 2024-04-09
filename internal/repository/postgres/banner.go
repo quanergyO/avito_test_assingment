@@ -21,8 +21,6 @@ func NewBanner(db *sqlx.DB) *Banner {
 }
 
 func (r *Banner) BannerGet(featureId int, tagsId []int, limit int, offset int) ([]types.BannerGet200ResponseInner, error) {
-	slog.Info("Repository: UserBannerGet start")
-	defer slog.Info("Repository: UserBannerGet end")
 	rows := "tag_ids, feature_id, content, is_active, created_at, updated_at"
 	query := fmt.Sprintf("SELECT %s FROM banners WHERE 1=1", rows)
 	if featureId != 0 {
@@ -68,8 +66,6 @@ func (r *Banner) BannerGet(featureId int, tagsId []int, limit int, offset int) (
 }
 
 func (r *Banner) BannerIdDelete(id int) error {
-	slog.Info("Repository: UserBannerGet start")
-	defer slog.Info("Repository: UserBannerGet end")
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", bannerTable)
 	slog.Info(query)
 	_, err := r.db.Exec(query, id)
@@ -78,8 +74,6 @@ func (r *Banner) BannerIdDelete(id int) error {
 }
 
 func (r *Banner) BannerIdPatch(id int, data types.BannerIdPatchRequest) error {
-	slog.Info("Repository: BannerIdPatch start")
-	defer slog.Info("Repository: BannerIdPatch end")
 	setValue := make([]string, 0)
 	args := make([]interface{}, 0)
 	argId := 1

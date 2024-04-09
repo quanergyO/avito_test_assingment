@@ -4,7 +4,6 @@ import (
 	"avito_test_assingment/internal/handler/response"
 	"avito_test_assingment/types"
 	"github.com/gin-gonic/gin"
-	"log/slog"
 	"net/http"
 	"strconv"
 )
@@ -14,9 +13,6 @@ const (
 )
 
 func (h *Handler) BannerGet(c *gin.Context) {
-	slog.Info("handler: UserBannerGet start")
-	defer slog.Info("handler: UserBannerGet end")
-
 	tagIDs, err := getIntArrayParam(c, "tags_id")
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusBadRequest, "invalid tag_ids param")
@@ -53,8 +49,6 @@ func (h *Handler) BannerGet(c *gin.Context) {
 }
 
 func (h *Handler) BannerIdDelete(c *gin.Context) {
-	slog.Info("handler: BannerIdDelete start")
-	defer slog.Info("handler: BannerIdDelete end")
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusBadRequest, "invalid id param")
@@ -73,9 +67,6 @@ func (h *Handler) BannerIdDelete(c *gin.Context) {
 }
 
 func (h *Handler) BannerIdPatch(c *gin.Context) {
-	slog.Info("handler: BannerIdPatch start")
-	defer slog.Info("handler: BannerIdPatch end")
-
 	var banner types.BannerIdPatchRequest
 	if err := c.BindJSON(&banner); err != nil {
 		response.NewErrorResponse(c, http.StatusBadRequest, err.Error())
@@ -124,8 +115,6 @@ func (h *Handler) BannerPost(c *gin.Context) {
 }
 
 func (h *Handler) UserBannerGet(c *gin.Context) {
-	slog.Info("handler: UserBannerGet start")
-	defer slog.Info("handler: UserBannerGet end")
 	var input types.GetModelBannerInput
 	if err := c.BindJSON(&input); err != nil {
 		response.NewErrorResponse(c, http.StatusBadRequest, err.Error())
@@ -135,6 +124,17 @@ func (h *Handler) UserBannerGet(c *gin.Context) {
 	banner, err := h.service.UserBannerGet(input.TagIds, input.FeatureId, input.UseLastRevision)
 	if err != nil {
 		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	role, exists := c.Get("role")
+	if !exists {
+		response.NewErrorResponse(c, http.StatusUnauthorized, "can't get role")
+		return
+	}
+
+	if banner.IsActive == false && role != types.Admin {
+		response.NewErrorResponse(c, http.StatusForbidden, "banner is not active")
 		return
 	}
 
