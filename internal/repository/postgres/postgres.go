@@ -2,8 +2,13 @@ package postgres
 
 import (
 	"fmt"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
 	"log/slog"
+	"os"
+	"path/filepath"
 )
 
 type Config struct {
@@ -30,6 +35,28 @@ func NewDB(cfg Config) (*sqlx.DB, error) {
 	if err = db.Ping(); err != nil {
 		return nil, err
 	}
+	err = makeMigration()
 	slog.Info("Success connect to DB")
-	return db, nil
+	return db, err
+}
+
+func makeMigration() error {
+	slog.Info("Start Migrations")
+	wd, err := os.Getwd()
+	if err != nil {
+		slog.Error("Can't get current working directory")
+		return err
+	}
+	migrationsPath := filepath.Join(wd, "schema")
+
+	m, err := migrate.New(
+		"file://"+migrationsPath,
+		"postgres://postgres:qwewrty@localhost:5436/postgres?sslmode=disable")
+	if err != nil {
+		slog.Error("Can't connect to db")
+		return err
+	}
+	err = m.Up()
+
+	return nil
 }
