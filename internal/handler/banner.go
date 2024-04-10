@@ -8,10 +8,6 @@ import (
 	"strconv"
 )
 
-const (
-	bannerCtx = "id"
-)
-
 // BannerGet godoc
 // @Summary Get banners
 // @Description Get banners by tag IDs, feature ID, limit, and offset
@@ -199,7 +195,7 @@ func (h *Handler) UserBannerGet(c *gin.Context) {
 		return
 	}
 
-	if banner.IsActive == false && role != types.Admin {
+	if !banner.IsActive && role != types.Admin {
 		response.NewErrorResponse(c, http.StatusForbidden, "banner is not active")
 		return
 	}

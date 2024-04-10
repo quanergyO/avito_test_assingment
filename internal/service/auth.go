@@ -36,12 +36,12 @@ func (s *AuthService) CreateUser(user types.UserType) (int, error) {
 
 func (s *AuthService) GenerateToken(user types.UserType) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &types.TokenClaims{
-		jwt.StandardClaims{
+		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
-		user.Id,
-		user.Role,
+		UserId: user.Id,
+		Role:   user.Role,
 	})
 	if user.Role == types.User {
 		return token.SignedString([]byte(signingUserKey))

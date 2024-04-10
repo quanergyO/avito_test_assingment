@@ -71,24 +71,6 @@ func (r *RedisCache) configureRedisKey(featureId int, tagIds []int) string {
 	return bannerKey
 }
 
-func (r *RedisCache) getAllDataFromCache() ([]types.BannerGet200ResponseInner, error) {
-	keys, err := r.cli.Keys(context.Background(), "*").Result()
-	if err != nil {
-		return nil, err
-	}
-	dataToWrite := make([]types.BannerGet200ResponseInner, 0)
-	for _, key := range keys {
-		var tmp types.BannerGet200ResponseInner
-		err := r.cli.Get(context.Background(), key).Scan(&tmp)
-		if err != nil {
-			continue // TODO think
-		}
-		dataToWrite = append(dataToWrite, tmp)
-	}
-
-	return dataToWrite, nil
-}
-
 func (r *RedisCache) IsBannerExists(key string) (bool, error) {
 	notExists, err := r.cli.Exists(context.Background(), key).Result()
 	if err != nil {

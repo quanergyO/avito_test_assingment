@@ -1,0 +1,41 @@
+linters-settings:
+  gocritic:
+    enabled: true
+    enabled-tags: []
+    disabled-tags: []
+    min-confidence: 0.8
+    severity: error
+    concurrency: 4
+  revive:
+    enabled: true
+    config: revive.toml
+    severity: error
+    concurrency: 4
+  gosimple:
+    enabled: true
+    severity: error
+    concurrency: 4
+  staticcheck:
+    enabled: true
+    concurrency: 4
+    checks:
+      - "all"
+    skip:
+      - "U1000"
+  govet:
+    enabled: true
+    concurrency: 4
+  golint:
+    enabled: true
+    severity: error
+    exclude-use-default: false
+    min-confidence: 0.8
+    issues-exit-zero: false
+  golangci-lint:
+    enabled: true
+    timeout: 5m0s
+    severity: error
+    exclude: "^vendor/"
+    build-tags:
+      - "integration"
+      - "tools"

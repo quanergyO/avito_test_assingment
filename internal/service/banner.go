@@ -35,7 +35,7 @@ func (s *BannerService) BannerPost(data types.BannerPostRequest) (int, error) {
 }
 
 func (s *BannerService) UserBannerGet(tagId []int, featureId int, useLastRevision bool) (types.BannerGet200ResponseInner, error) {
-	if useLastRevision == true {
+	if useLastRevision {
 		data, err := s.cache.ReadBanner(types.GetModelBannerInput{
 			TagIds:    tagId,
 			FeatureId: featureId,
