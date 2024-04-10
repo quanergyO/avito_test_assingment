@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  avito-app:
+    build: ./
+    command: ./avito-app
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+      - cache
+    environment:
+      - DB_PASSWORD=qwerty
+
+
+  db:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./.database/postgres/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=qwerty
+    ports:
+      - 5436:5432
+
+  cache:
+    restart: always
+    image: redis:latest
+    ports:
+      - 6379:6379
+
+

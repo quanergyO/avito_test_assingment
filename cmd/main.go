@@ -11,7 +11,6 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
-	"log"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -61,11 +60,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err != nil {
-		slog.Info("Error: failed to init redis connection ", err)
-		os.Exit(1)
-	}
-
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos, redisDB)
 	handlers := handler.NewHandler(services)
@@ -73,7 +67,8 @@ func main() {
 	serv := new(server.Server)
 	go func() {
 		if err := serv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
-			log.Fatal("Error: failed to start server on port: %s", viper.GetString("port"), err)
+			slog.Error("Error: failed to start server on port:", viper.GetString("port"), err.Error())
+			os.Exit(1)
 		}
 	}()
 
@@ -82,13 +77,13 @@ func main() {
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	<-quit
 
-	if err := serv.ShutDown(context.Background()); err != nil {
-		slog.Error("error occured on server shutting down: %s", err.Error())
+	if err = serv.ShutDown(context.Background()); err != nil {
+		slog.Error("error occured on server shutting down:", err)
 		os.Exit(1)
 	}
 
-	if err := db.Close(); err != nil {
-		slog.Error("error occured on close db connection: %s", err.Error())
+	if err = db.Close(); err != nil {
+		slog.Error("error occured on close db connection:", err)
 		os.Exit(1)
 	}
 	slog.Info("Server shutting down")

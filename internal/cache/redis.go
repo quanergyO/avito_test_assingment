@@ -39,7 +39,7 @@ func NewRedis(cfg Config) (*RedisCache, error) {
 func (r *RedisCache) WriteBanner(data types.BannerGet200ResponseInner) error {
 	bannerKey := r.configureRedisKey(data.FeatureId, data.TagIds)
 	err := r.cli.Set(context.Background(), bannerKey, data, TTLCache).Err()
-	slog.Info("REDIS: Save banner in cache: ", data)
+	slog.Info("REDIS: Save banner in cache")
 
 	return err
 }
@@ -57,7 +57,7 @@ func (r *RedisCache) ReadBanner(input types.GetModelBannerInput) (types.BannerGe
 		return types.BannerGet200ResponseInner{}, err
 	}
 
-	slog.Info("REDIS: read banner from cache: ", banner)
+	slog.Info("REDIS: read banner from cache:")
 
 	return banner, err
 }

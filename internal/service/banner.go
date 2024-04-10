@@ -7,11 +7,11 @@ import (
 )
 
 type BannerService struct {
-	repo  repository.Banner
+	repo  *repository.Repository
 	cache cache.Cache
 }
 
-func NewBannerService(repo repository.Banner, cacheInstance cache.Cache) *BannerService {
+func NewBannerService(repo *repository.Repository, cacheInstance cache.Cache) *BannerService {
 	return &BannerService{
 		repo:  repo,
 		cache: cacheInstance,
@@ -49,6 +49,7 @@ func (s *BannerService) UserBannerGet(tagId []int, featureId int, useLastRevisio
 	if err != nil {
 		return data, err
 	}
+
 	err = s.cache.WriteBanner(data)
 
 	return data, err

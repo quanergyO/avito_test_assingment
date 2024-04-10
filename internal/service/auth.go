@@ -19,10 +19,10 @@ const (
 )
 
 type AuthService struct {
-	repo repository.Authorization
+	repo *repository.Repository
 }
 
-func NewAuthService(repo repository.Authorization) *AuthService {
+func NewAuthService(repo *repository.Repository) *AuthService {
 	return &AuthService{repo: repo}
 }
 
@@ -35,7 +35,6 @@ func (s *AuthService) CreateUser(user types.UserType) (int, error) {
 }
 
 func (s *AuthService) GenerateToken(user types.UserType) (string, error) {
-	slog.Info("GenerateToken Role: ", user.Role)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &types.TokenClaims{
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
@@ -56,7 +55,6 @@ func (s *AuthService) ParserToken(accessToken string) (*types.TokenClaims, error
 			return nil, errors.New("invalid signing method")
 		}
 		if claims, ok := token.Claims.(*types.TokenClaims); ok {
-			slog.Info("Claims.Role = ", claims.Role)
 			if claims.Role == types.Admin {
 				return []byte(signingAdminKey), nil
 			} else if claims.Role == types.User {

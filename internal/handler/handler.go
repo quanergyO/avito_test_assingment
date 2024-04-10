@@ -2,7 +2,6 @@ package handler
 
 import (
 	_ "avito_test_assingment/docs"
-	"avito_test_assingment/internal/cache"
 	"avito_test_assingment/internal/service"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -11,11 +10,9 @@ import (
 
 type Handler struct {
 	service *service.Service
-	cache   cache.Cache
 }
 
 func NewHandler(service *service.Service) *Handler {
-
 	return &Handler{
 		service: service,
 	}
