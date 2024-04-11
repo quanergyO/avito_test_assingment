@@ -35,23 +35,22 @@ func NewDB(cfg Config) (*sqlx.DB, error) {
 	if err = db.Ping(); err != nil {
 		return nil, err
 	}
-	err = makeMigration()
-	slog.Info("Success connect to DB")
+	err = makeMigration(cfg)
+
 	return db, err
 }
 
-func makeMigration() error {
-	slog.Info("Start Migrations")
+func makeMigration(cfg Config) error {
 	wd, err := os.Getwd()
 	if err != nil {
 		slog.Error("Can't get current working directory")
 		return err
 	}
 	migrationsPath := filepath.Join(wd, "schema")
-
+	databaseURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName, cfg.SSLMode)
 	m, err := migrate.New(
 		"file://"+migrationsPath,
-		"postgres://postgres:qwewrty@localhost:5436/postgres?sslmode=disable")
+		databaseURL)
 	if err != nil {
 		slog.Error("Can't connect to db")
 		return err

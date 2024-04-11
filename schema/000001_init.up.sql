@@ -1,4 +1,4 @@
-CREATE TABLE banners (
+CREATE TABLE IF NOT EXISTS banners (
      id SERIAL PRIMARY KEY,
      tag_ids INT[],
      feature_id INT,
@@ -8,7 +8,7 @@ CREATE TABLE banners (
      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
