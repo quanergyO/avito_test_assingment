@@ -68,7 +68,6 @@ func (r *Banner) BannerGet(featureId int, tagsId []int, limit int, offset int) (
 
 func (r *Banner) BannerIdDelete(id int) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", bannerTable)
-	slog.Info(query)
 	_, err := r.db.Exec(query, id)
 
 	return err

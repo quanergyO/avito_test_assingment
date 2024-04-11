@@ -65,7 +65,7 @@ func (h *Handler) BannerGet(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path int true "Banner ID"
-// @Success 501 {object} map[string]interface{} "status": "ok" "Successful response"
+// @Success 200 {object} map[string]interface{} "status": "ok" "Successful response"
 // @Failure 400 {object} response.errorResponse "Bad request"
 // @Failure 500 {object} response.errorResponse "Internal server error"
 // @Router /api/v1/banners/{id} [delete]
@@ -81,7 +81,7 @@ func (h *Handler) BannerIdDelete(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusNotImplemented, map[string]interface{}{
+	c.JSON(http.StatusOK, map[string]interface{}{
 		"status": "ok",
 	})
 
@@ -95,7 +95,7 @@ func (h *Handler) BannerIdDelete(c *gin.Context) {
 // @Produce json
 // @Param id path int true "Banner ID"
 // @Param input body types.BannerIdPatchRequest true "Banner information"
-// @Success 501 {object} map[string]interface{} "status": "ok" "Successful response"
+// @Success 200 {object} map[string]interface{} "status": "ok" "Successful response"
 // @Failure 400 {object} response.errorResponse "Bad request"
 // @Failure 500 {object} response.errorResponse "Internal server error"
 // @Router /api/v1/banners/{id} [patch]
@@ -117,7 +117,7 @@ func (h *Handler) BannerIdPatch(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusNotImplemented, map[string]interface{}{
+	c.JSON(http.StatusOK, map[string]interface{}{
 		"status": "ok",
 	})
 }
@@ -194,7 +194,6 @@ func (h *Handler) UserBannerGet(c *gin.Context) {
 		response.NewErrorResponse(c, http.StatusUnauthorized, "can't get role")
 		return
 	}
-
 	if !banner.IsActive && role != types.Admin {
 		response.NewErrorResponse(c, http.StatusForbidden, "banner is not active")
 		return

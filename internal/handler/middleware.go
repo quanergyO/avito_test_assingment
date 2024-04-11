@@ -11,10 +11,9 @@ import (
 
 const (
 	authorizationHeader = "Authorization"
-	userCtx             = "userId"
 )
 
-func (h *Handler) userIdentity(c *gin.Context) {
+func (h *Handler) UserIdentity(c *gin.Context) {
 	header := c.GetHeader(authorizationHeader)
 	if header == "" {
 		response.NewErrorResponse(c, http.StatusUnauthorized, "empty auth header")
@@ -35,7 +34,7 @@ func (h *Handler) userIdentity(c *gin.Context) {
 	c.Set("role", claims.Role)
 }
 
-func (h *Handler) administratorVerification(c *gin.Context) {
+func (h *Handler) AdministratorVerification(c *gin.Context) {
 	role, exists := c.Get("role")
 	if !exists {
 		response.NewErrorResponse(c, http.StatusUnauthorized, "can't get role")

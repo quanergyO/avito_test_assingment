@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-// signUp godoc
+// SignUp godoc
 // @Summary Create a new user
 // @Description Create a new user with the provided information
 // @Tags users
@@ -18,7 +18,7 @@ import (
 // @Failure 400 {object} response.errorResponse "Invalid input body"
 // @Failure 500 {object} response.errorResponse "Internal server error"
 // @Router /auth/sign-up [post]
-func (h *Handler) signUp(c *gin.Context) {
+func (h *Handler) SignUp(c *gin.Context) {
 	var user types.UserType
 	if err := c.BindJSON(&user); err != nil {
 		response.NewErrorResponse(c, http.StatusBadRequest, "Invalid input body")
@@ -36,7 +36,7 @@ func (h *Handler) signUp(c *gin.Context) {
 	})
 }
 
-// signIn godoc
+// SignIn godoc
 // @Summary Authenticate user
 // @Description Authenticate user with provided credentials
 // @Tags auth
@@ -47,7 +47,7 @@ func (h *Handler) signUp(c *gin.Context) {
 // @Failure 400 {object} response.errorResponse "Bad request"
 // @Failure 401 {object} response.errorResponse "Unauthorized"
 // @Router /auth/sign-in [post]
-func (h *Handler) signIn(c *gin.Context) {
+func (h *Handler) SignIn(c *gin.Context) {
 	var input types.SignInInput
 
 	if err := c.BindJSON(&input); err != nil {

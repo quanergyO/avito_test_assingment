@@ -15,7 +15,6 @@ import (
 
 func TestHandler_signUp(t *testing.T) {
 	type mockBehavior func(s *mock_service.MockAuthorization, user types.UserType)
-
 	testTable := []struct {
 		name                 string
 		inputBody            string
@@ -72,7 +71,7 @@ func TestHandler_signUp(t *testing.T) {
 
 			// Test Server
 			r := gin.New()
-			r.POST("/sign-up", handler.signUp)
+			r.POST("/sign-up", handler.SignUp)
 
 			// Test Request
 			w := httptest.NewRecorder()

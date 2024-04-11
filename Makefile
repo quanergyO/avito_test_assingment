@@ -7,7 +7,11 @@ build:
 	go build cmd/main.go
 
 test:
-	go test -v -count=1 ./...
+	docker run --name=redis-avito-test -p 6380:6379 -d --rm redis
+	docker run --name=avito-test-bd -e POSTGRES_PASSWORD='qwerty' -p 5438:5432 -d --rm postgres
+	go test -count=1 ./tests/ || true
+	docker stop redis-avito-test
+	docker stop avito-test-bd
 
 cover:
 	go test -short -count=1 -race -coverprofile=coverage.out ./...

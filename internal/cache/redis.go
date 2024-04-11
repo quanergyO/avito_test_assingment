@@ -67,7 +67,6 @@ func (r *RedisCache) configureRedisKey(featureId int, tagIds []int) string {
 	for i, tag := range tagIds {
 		bannerKey += fmt.Sprintf("tagId%d=%d", i+1, tag)
 	}
-	slog.Info(bannerKey)
 	return bannerKey
 }
 
