@@ -4,8 +4,8 @@
 
 make цели: \
 - run\
-    Требует установненного Docker. 
-    Поднимает 3 контейнера Postgres:latest, Redis:latest, BannersApi и запускает сервис. Настройки портов для приложелния находятся в файле configs/config.yml
+    Требует установленного Docker. 
+    Поднимает 3 контейнера Postgres:latest, Redis:latest, BannersApi и запускает сервис. Настройки портов для приложения находятся в файле configs/config.yml
 
 
 - build \
@@ -13,7 +13,7 @@ make цели: \
 
 
 - test \
-    Требует установленного Go. Поднимает 2 контейнера Postgres:latest, Redis:latest и запускает E2E тестирование. Настройки портов для приложелния находятся в файле tests/configs/config.yml
+    Требует установленного Go. Поднимает 2 контейнера Postgres:latest, Redis:latest и запускает E2E тестирование. Настройки портов для приложения находятся в файле tests/configs/config.yml
 
 
 - cover \
@@ -28,8 +28,10 @@ make цели: \
 
 1. [Authorization](#Authorization) \
     1.1 [Handlers](#Handlers) 
-2. [Banners API](#Banners API) \
+2. [Banners API](#Banners_API) \
     2.1 [Handlers](#Handlers)
+3. [Load Testing](#Load_Testing) \
+    3.1 [Result](#Result)
 
 
 # Authorization
@@ -56,3 +58,8 @@ make цели: \
    Доступ: admin, user. Получение баннера по фиче и тегу. В случае переданного флага use_last_revision обращается на прямую в БД, иначе сначала смотрит в редис
 6. GET: /swagger/index.html \
     Доступ: Все. swagger документация API
+
+# Load Testing
+
+## Result
+1. Результаты нагрузочного тестирования в файле tests/RESULT-1000-5min/index.html
