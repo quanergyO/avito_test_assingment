@@ -201,3 +201,33 @@ func (h *Handler) UserBannerGet(c *gin.Context) {
 
 	c.JSON(http.StatusOK, banner)
 }
+
+// DeleteBannerByFeatureAndTags godoc
+// @Summary Удалить баннеры по функции и тегам
+// @Description Удалить баннеры по функции и тегам с использованием переданных идентификаторов тегов и функции
+// @Tags banners
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param tag_ids body []int true "ID тегов"
+// @Param feature_id body int true "ID функции"
+// @Success 200 {object} map[string]interface{} "id": int "Successful response with banner ID"
+// @Failure 400 {object} response.errorResponse "{"message": "invalid banners param"}"
+// @Failure 500 {object} response.errorResponse "{"message": "Internal Server Error"}"
+// @Router /api/delete-banner [post]
+func (h *Handler) DeleteBannerByFeatureAndTags(c *gin.Context) {
+	var input types.DeleteModelBannerInput
+	if err := c.BindJSON(&input); err != nil {
+		response.NewErrorResponse(c, http.StatusBadRequest, "invalid banners param")
+		return
+	}
+
+	if err := h.service.DeleteBannerByFeatureAndTags(input.TagIds, input.FeatureId); err != nil {
+		response.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "ok",
+	})
+}

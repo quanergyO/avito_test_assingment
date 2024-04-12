@@ -152,9 +152,8 @@ func (r *Banner) UserBannerGet(tagsId []int, featureId int) (types.BannerGet200R
 	}
 	array = array[:len(array)-1]
 	array += "}"
-
 	query := fmt.Sprintf("SELECT %s FROM %s WHERE feature_id = $1 AND tag_ids @> $2", rows, bannerTable)
-	slog.Info(query)
+
 	err := r.db.Get(&banner, query, featureId, array)
 	if err != nil {
 		return types.BannerGet200ResponseInner{}, err
@@ -175,6 +174,21 @@ func (r *Banner) UserBannerGet(tagsId []int, featureId int) (types.BannerGet200R
 		CreatedAt: banner.CreatedAt,
 		UpdatedAt: banner.UpdatedAt,
 	}, nil
+}
+
+func (r *Banner) DeleteBannerByFeatureAndTags(tagId []int, featureId int) error {
+	query := fmt.Sprintf("DELETE FROM %s WHERE feature_id = $1", bannerTable)
+	slog.Info(query)
+	if len(tagId) > 0 {
+		query += fmt.Sprintf(" AND tag_ids @> ARRAY[%d", tagId[0])
+		for _, tagID := range tagId[1:] {
+			query += fmt.Sprintf(", %d", tagID)
+		}
+		query += "]"
+	}
+	_, err := r.db.Exec(query, featureId)
+
+	return err
 }
 
 func pqInt64ArrayToIntSlice(arr pq.Int64Array) []int {

@@ -37,6 +37,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			banner.DELETE("/:id", h.BannerIdDelete)
 			banner.PATCH("/:id", h.BannerIdPatch)
 			banner.POST("/", h.BannerPost)
+			banner.DELETE("/delete")
 
 		}
 		api.GET("/user_banner", h.UserBannerGet)

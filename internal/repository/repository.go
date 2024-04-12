@@ -12,6 +12,7 @@ type Banner interface {
 	BannerIdPatch(id int, data types.BannerIdPatchRequest) error
 	BannerPost(data types.BannerPostRequest) (int, error)
 	UserBannerGet(tagId []int, featureId int) (types.BannerGet200ResponseInner, error)
+	DeleteBannerByFeatureAndTags(tagId []int, featureId int) error
 }
 
 type Authorization interface {

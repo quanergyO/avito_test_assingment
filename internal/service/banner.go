@@ -54,3 +54,7 @@ func (s *BannerService) UserBannerGet(tagId []int, featureId int, useLastRevisio
 
 	return data, err
 }
+
+func (s *BannerService) DeleteBannerByFeatureAndTags(tagId []int, featureId int) error {
+	return s.repo.DeleteBannerByFeatureAndTags(tagId, featureId)
+}
