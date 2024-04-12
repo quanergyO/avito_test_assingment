@@ -56,10 +56,13 @@ make цели: \
    Доступ: admin. Обновление баннера по id.
 5. GET: /api/v1/user_banner \
    Доступ: admin, user. Получение баннера по фиче и тегу. В случае переданного флага use_last_revision обращается на прямую в БД, иначе сначала смотрит в редис
-6. GET: /swagger/index.html \
+6. DELETE: /api/v1/delete \
+    Доступ: admin. Удаление баннера по фиче и тегу. 
+
+7. GET: /swagger/index.html \
     Доступ: Все. swagger документация API
 
 # Load Testing
 
 ## Result
-1. Результаты нагрузочного тестирования в файле tests/RESULT-1000-5min/index.html
+1. Результаты нагрузочного тестирования: https://github.com/quanergyO/load_test_for_avito
